@@ -28,7 +28,7 @@ jobs:
           context: ./aws/
           file: ./aws/Dockerfile
           push: false
-          tags: user/appname:${{ matrix.apython_versionrg1 }}-${{ matrix.arg2 }}
+          tags: user/appname:${{ matrix.python_version }}-${{ matrix.debian_version }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python_version }}
             DEBIAN_VERSION=${{ matrix.debian_version }}
