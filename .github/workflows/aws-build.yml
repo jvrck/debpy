@@ -36,8 +36,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: false
           tags: | 
-            jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}:${{ env.IMAGE_TAG }}-aws
-            ghcr.io/jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}:${{ env.IMAGE_TAG }}-aws
+            jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}${{ env.IMAGE_TAG }}-aws
+            ghcr.io/jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}${{ env.IMAGE_TAG }}-aws
           build-args: |
             PYTHON_VERSION=${{ matrix.python_version }}
             DEBIAN_VERSION=${{ matrix.debian_version }}
