@@ -36,9 +36,9 @@ jobs:
       - name: Set environment variable
         run: |
           if [ "${{ github.ref }}" = "refs/heads/master" ]; then
-            echo "export IMAGE_TAG=latest" >> $GITHUB_ENV
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
           else
-            echo "export IMAGE_TAG=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+            echo "IMAGE_TAG=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
           fi
       
       - name: Use the value
@@ -52,8 +52,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: | 
-            jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-${{ env.IMAGE_TAG }}-aws
-            ghcr.io/jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-${{ env.IMAGE_TAG }}-aws
+            jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-aws-${{ env.IMAGE_TAG }}
+            ghcr.io/jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-aws-${{ env.IMAGE_TAG }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python_version }}
             DEBIAN_VERSION=${{ matrix.debian_version }}
