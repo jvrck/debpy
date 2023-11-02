@@ -1,0 +1,57 @@
+name: Build and push Docker images
+
+on:
+  push:
+    branches: [ '*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: ['3.11', '3.12']
+        debian_version: ['bookworm']
+        variant: ['', '-slim']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to Github Packages
+        uses: docker/login-action@master
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set environment variable
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          fi
+
+      - name: Build and push AWS image
+        uses: docker/build-push-action@master
+        with:
+          context: ./aws/
+          file: ./aws/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: | 
+            jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-aws-${{ env.IMAGE_TAG }}
+            ghcr.io/jvrck/debpy:${{ matrix.python_version }}-${{ matrix.debian_version }}${{ matrix.variant }}-aws-${{ env.IMAGE_TAG }}
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python_version }}
+            DEBIAN_VERSION=${{ matrix.debian_version }}
+            VARIANT=${{ matrix.variant }}
